@@ -180,7 +180,7 @@ def target_hint() -> str:
 # ==================== 基础命令 ====================
 
 
-@router.message(Command(["start", "开始"]))
+@router.message(Command("start", "开始"))
 async def start_cmd(message: Message) -> None:
     await ensure_context(message)
     if message.chat.type == ChatType.PRIVATE:
@@ -208,7 +208,7 @@ async def start_cmd(message: Message) -> None:
         )
 
 
-@router.message(Command(["help", "帮助"]))
+@router.message(Command("help", "帮助"))
 async def help_cmd(message: Message) -> None:
     await ensure_context(message)
     if message.chat.type == ChatType.PRIVATE:
@@ -274,7 +274,7 @@ async def help_cmd(message: Message) -> None:
     )
 
 
-@router.message(Command(["owner", "主人"]))
+@router.message(Command("owner", "主人"))
 async def owner_cmd(message: Message) -> None:
     """查看机器人的主人信息。"""
     await ensure_context(message)
@@ -293,14 +293,14 @@ async def owner_cmd(message: Message) -> None:
     )
 
 
-@router.message(Command(["rules", "规则"]))
+@router.message(Command("rules", "规则"))
 async def rules_cmd(message: Message) -> None:
     await ensure_context(message)
     cfg = await db.get_settings(message.chat.id)
     await message.answer(cfg.get("rules", DEFAULT_CHAT_SETTINGS["rules"]))
 
 
-@router.message(Command(["adminlist", "管理员列表"]))
+@router.message(Command("adminlist", "管理员列表"))
 async def adminlist_cmd(message: Message, bot: Bot) -> None:
     await ensure_context(message)
     if not is_group(message):
@@ -323,7 +323,7 @@ async def adminlist_cmd(message: Message, bot: Bot) -> None:
     await message.answer("\n".join(lines))
 
 
-@router.message(Command(["setadmin", "授权管理员"]))
+@router.message(Command("setadmin", "授权管理员"))
 async def setadmin_cmd(message: Message, bot: Bot) -> None:
     if not message.from_user:
         return
@@ -349,7 +349,7 @@ async def setadmin_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"✅ 已授权 {target_id} 为 {'超级管理员' if role == 'super_admin' else '管理员'}。")
 
 
-@router.message(Command(["deladmin", "撤销管理员"]))
+@router.message(Command("deladmin", "撤销管理员"))
 async def deladmin_cmd(message: Message, bot: Bot) -> None:
     if not message.from_user:
         return
@@ -368,7 +368,7 @@ async def deladmin_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"✅ 已撤销 {target_id} 的管理员权限。")
 
 
-@router.message(Command(["updategroup", "同步管理员"]))
+@router.message(Command("updategroup", "同步管理员"))
 async def update_group_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -389,7 +389,7 @@ async def update_group_cmd(message: Message, bot: Bot) -> None:
 # ==================== 禁言/封禁/踢出 ====================
 
 
-@router.message(Command(["mute", "禁言"]))
+@router.message(Command("mute", "禁言"))
 async def mute_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -406,7 +406,7 @@ async def mute_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"🔇 已禁言 {target_id}，时长：{label}。")
 
 
-@router.message(Command(["unmute", "解禁"]))
+@router.message(Command("unmute", "解禁"))
 async def unmute_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -419,7 +419,7 @@ async def unmute_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"✅ 已解除 {target_id} 的禁言。")
 
 
-@router.message(Command(["ban", "封禁"]))
+@router.message(Command("ban", "封禁"))
 async def ban_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -436,7 +436,7 @@ async def ban_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"🚫 已封禁 {target_id}，并加入全局黑名单。")
 
 
-@router.message(Command(["unban", "解封"]))
+@router.message(Command("unban", "解封"))
 async def unban_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -450,7 +450,7 @@ async def unban_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"✅ 已解封 {target_id}。")
 
 
-@router.message(Command(["kick", "踢出"]))
+@router.message(Command("kick", "踢出"))
 async def kick_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -464,7 +464,7 @@ async def kick_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"🦶 已踢出 {target_id}。")
 
 
-@router.message(Command(["warn", "警告"]))
+@router.message(Command("warn", "警告"))
 async def warn_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -491,7 +491,7 @@ async def warn_cmd(message: Message, bot: Bot) -> None:
 # ==================== 消息管理 ====================
 
 
-@router.message(Command(["del", "删除"]))
+@router.message(Command("del", "删除"))
 async def del_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -506,7 +506,7 @@ async def del_cmd(message: Message, bot: Bot) -> None:
     await send_log(bot, message.chat.id, message.from_user.id, None, "delete_message")
 
 
-@router.message(Command(["clean", "清理"]))
+@router.message(Command("clean", "清理"))
 async def clean_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -528,7 +528,7 @@ async def clean_cmd(message: Message, bot: Bot) -> None:
         pass
 
 
-@router.message(Command(["lock", "锁群"]))
+@router.message(Command("lock", "锁群"))
 async def lock_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -538,7 +538,7 @@ async def lock_cmd(message: Message, bot: Bot) -> None:
     await message.reply("🔒 已锁定群聊，仅管理员可发言。")
 
 
-@router.message(Command(["unlock", "解锁"]))
+@router.message(Command("unlock", "解锁"))
 async def unlock_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -548,7 +548,7 @@ async def unlock_cmd(message: Message, bot: Bot) -> None:
     await message.reply("🔓 已解除群聊锁定。")
 
 
-@router.message(Command(["slow", "慢速"]))
+@router.message(Command("slow", "慢速"))
 async def slow_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -562,7 +562,7 @@ async def slow_cmd(message: Message, bot: Bot) -> None:
 # ==================== 过滤设置 ====================
 
 
-@router.message(Command(["addword", "添加关键词"]))
+@router.message(Command("addword", "添加关键词"))
 async def addword_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -574,7 +574,7 @@ async def addword_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"已添加关键词：{word}")
 
 
-@router.message(Command(["delword", "删除关键词"]))
+@router.message(Command("delword", "删除关键词"))
 async def delword_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -595,7 +595,7 @@ async def adddomain_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"已添加黑名单域名：{domain}")
 
 
-@router.message(Command(["deldomain", "删除域名"]))
+@router.message(Command("deldomain", "删除域名"))
 async def deldomain_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -604,7 +604,7 @@ async def deldomain_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"已删除黑名单域名：{domain}")
 
 
-@router.message(Command(["whitelist", "白名单"]))
+@router.message(Command("whitelist", "白名单"))
 async def whitelist_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -616,7 +616,7 @@ async def whitelist_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"✅ 已加入白名单：{target_id}")
 
 
-@router.message(Command(["unwhitelist", "移除白名单"]))
+@router.message(Command("unwhitelist", "移除白名单"))
 async def unwhitelist_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -628,7 +628,7 @@ async def unwhitelist_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"已移出白名单：{target_id}")
 
 
-@router.message(Command(["setwelcome", "设置欢迎"]))
+@router.message(Command("setwelcome", "设置欢迎"))
 async def setwelcome_cmd(message: Message, bot: Bot) -> None:
     """设置欢迎文字，支持 {name} 占位符。"""
     if not await require_admin(message, bot):
@@ -641,7 +641,7 @@ async def setwelcome_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"✅ 欢迎消息已设置。\n当前：{text}")
 
 
-@router.message(Command(["setwelcomeimg", "设置欢迎图片"]))
+@router.message(Command("setwelcomeimg", "设置欢迎图片"))
 async def setwelcomeimg_cmd(message: Message, bot: Bot) -> None:
     """回复一张图片，设为入群欢迎图片。"""
     if not await require_admin(message, bot):
@@ -655,7 +655,7 @@ async def setwelcomeimg_cmd(message: Message, bot: Bot) -> None:
     await message.reply("✅ 欢迎图片已设置。新人入群时会自动发送这张图片 + 欢迎文字。")
 
 
-@router.message(Command(["setnewaccount", "新号限制"]))
+@router.message(Command("setnewaccount", "新号限制"))
 async def setnewaccount_cmd(message: Message, bot: Bot) -> None:
     """设置新号限制天数。"""
     if not await require_admin(message, bot):
@@ -672,7 +672,7 @@ async def setnewaccount_cmd(message: Message, bot: Bot) -> None:
         await message.reply("✅ 已关闭新号限制。")
 
 
-@router.message(Command(["report", "举报"]))
+@router.message(Command("report", "举报"))
 async def report_cmd(message: Message, bot: Bot) -> None:
     await ensure_context(message)
     if not is_group(message) or not message.from_user:
@@ -686,7 +686,7 @@ async def report_cmd(message: Message, bot: Bot) -> None:
     await message.reply("✅ 举报已提交给管理员。")
 
 
-@router.message(Command(["me", "我的"]))
+@router.message(Command("me", "我的"))
 async def me_cmd(message: Message) -> None:
     await ensure_context(message)
     if not message.from_user:
@@ -708,7 +708,7 @@ async def me_cmd(message: Message) -> None:
     )
 
 
-@router.message(Command(["rank", "活跃榜"]))
+@router.message(Command("rank", "活跃榜"))
 async def rank_cmd(message: Message) -> None:
     await ensure_context(message)
     rows = await db.fetchall(
@@ -725,7 +725,7 @@ async def rank_cmd(message: Message) -> None:
     await message.answer("\n".join(lines))
 
 
-@router.message(Command(["quietest", "最安静"]))
+@router.message(Command("quietest", "最安静"))
 async def quietest_cmd(message: Message) -> None:
     """最安静用户排名。"""
     await ensure_context(message)
@@ -746,7 +746,7 @@ async def quietest_cmd(message: Message) -> None:
 # ==================== 频道管理 ====================
 
 
-@router.message(Command(["post", "发帖"]))
+@router.message(Command("post", "发帖"))
 async def post_cmd(message: Message, bot: Bot) -> None:
     if not message.from_user or message.from_user.id not in settings.super_admins:
         await message.reply("只有全局超级管理员可以发帖。")
@@ -764,7 +764,7 @@ async def post_cmd(message: Message, bot: Bot) -> None:
         await message.reply(f"发送失败：{e}")
 
 
-@router.message(Command(["postbtn", "发帖按钮"]))
+@router.message(Command("postbtn", "发帖按钮"))
 async def postbtn_cmd(message: Message, bot: Bot) -> None:
     if not message.from_user or message.from_user.id not in settings.super_admins:
         await message.reply("只有全局超级管理员可以发帖。")
@@ -798,7 +798,7 @@ async def postbtn_cmd(message: Message, bot: Bot) -> None:
         await message.reply(f"发送失败：{e}")
 
 
-@router.message(Command(["schedule", "定时"]))
+@router.message(Command("schedule", "定时"))
 async def schedule_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
@@ -830,7 +830,7 @@ async def schedule_cmd(message: Message, bot: Bot) -> None:
 # ==================== 广播和统计 ====================
 
 
-@router.message(Command(["broadcast", "广播"]))
+@router.message(Command("broadcast", "广播"))
 async def broadcast_cmd(message: Message, bot: Bot) -> None:
     if not message.from_user or message.from_user.id not in settings.super_admins:
         await message.reply("只有全局超级管理员可以广播。")
@@ -851,7 +851,7 @@ async def broadcast_cmd(message: Message, bot: Bot) -> None:
     await message.reply(f"广播完成，成功发送到 {ok} 个群/频道。")
 
 
-@router.message(Command(["stats", "统计"]))
+@router.message(Command("stats", "统计"))
 async def stats_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -884,7 +884,7 @@ async def stats_cmd(message: Message, bot: Bot) -> None:
     )
 
 
-@router.message(Command(["logs", "日志"]))
+@router.message(Command("logs", "日志"))
 async def logs_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -901,7 +901,7 @@ async def logs_cmd(message: Message, bot: Bot) -> None:
     await message.answer("\n".join(lines))
 
 
-@router.message(Command(["export", "导出"]))
+@router.message(Command("export", "导出"))
 async def export_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot):
         return
@@ -925,7 +925,7 @@ async def export_cmd(message: Message, bot: Bot) -> None:
         await message.reply_document(ledger_file, caption=f"记账明细导出（{len(ledger_rows)} 条）")
 
 
-@router.message(Command(["cleaninactive", "清理不活跃"]))
+@router.message(Command("cleaninactive", "清理不活跃"))
 async def clean_inactive_cmd(message: Message, bot: Bot) -> None:
     if not await require_admin(message, bot) or not message.from_user:
         return
